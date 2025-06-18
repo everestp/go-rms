@@ -36,8 +36,8 @@ func main() {
 	router.Use(middleware.Authentication())
 
 	// Register protected routes
-	routes.FoodRouter(router)
-	routes.TableRouter(router)
+	routes.FoodRoutes(router)
+	routes.TableRoutes(router)
 	routes.OrderRoutes(router)
 	routes.InvoiceRoutes(router)
 

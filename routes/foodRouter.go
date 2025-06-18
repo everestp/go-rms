@@ -1,5 +1,13 @@
 package routes
 
-import()
+import (
+    controller "go-rms/controllers"
+    "github.com/gin-gonic/gin"
+)
 
-func FoodRoutes
+func FoodRoutes(incomingRoutes *gin.Engine) {
+    incomingRoutes.GET("/foods", controller.GetFoods())
+    incomingRoutes.GET("/foods/:food_id", controller.GetFood())
+    incomingRoutes.POST("/foods", controller.CreateFood())
+    incomingRoutes.PATCH("/foods/:food_id", controller.UpdateFood())
+}
