@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"go-rms/database"
 	"go-rms/models"
 	"log"
@@ -159,16 +160,24 @@ func UpdateFood() gin.HandlerFunc {
 
  var updateObj primitive.D
  if food.Name !=ni{
-
+updateObj = append(updateObj, bson.E{"name",food.Name})
  }
   if food.Price !=ni{
-	
+	updateObj = append(updateObj, bson.E{"price",food.Price})
  }
   if food.Food_image !=ni{
-	
+	updateObj = append(updateObj, bson.E{"food_image",food.Food_image})
  }
   if food.Menu_id !=ni{
-	
+
+	err := menuCollection.FindOne(ctx ,bson.M{"menu_id": food.Menu_id}).Decode(&menu)
+	defer cancel()
+	if err!= nil{
+		msg := fmt.Sprintf("message :menu was not found")
+		c.JSON(http.StatusInternalServerError ,gin.H{"error":msg})
+		return
+	}
+	updateObj = append(updateObj, bson.E{"menu",food.Price})
  }
  food.Update_at , _ = time.Parse(time.RFC3339, now.Format(time.RFC3339))
 	updateObj = append(updateObj, bson.E{"updated_at",food.Update_at})	
@@ -177,17 +186,32 @@ func UpdateFood() gin.HandlerFunc {
 opt := options.UpdateOptions{
 	Upsert: &upsert,
 }
-	
+result ,err := foodCollection.UpdateOne(
+	ctx,
+	filter,
+	bson.D {
+		{"$set",updateObj}
+	},
+	&opt
+)
+if err !=nil {
+	msg :=fmt.Sprint("food item update failed")
+	c.JSON(http.StatusInternalServerError ,gin.H{"error" :msg})
+	return
+}
+	c.JSON(http.StatusOK , result)
 	}
 }
 
 // Helper function to round numbers
 func round(num float64) int {
-	return int(num + 0.5)
+	return int(num + math.Copysign(0.5 ,num))
 }
 
 // Helper function to fix precision in floating-point numbers
 func toFixed(num float64, precision int) float64 {
-	scale := math.Pow(10, float64(precision))
-	return math.Round(num*scale) / scale
+
+	
+	output := math.Pow(10, float64(precision))
+	return math.Round(num*output) / output
 }
