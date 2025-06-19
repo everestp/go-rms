@@ -1,6 +1,6 @@
 package routes
 import(
-"go-rms/controllers"
+ controllers "go-rms/controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -8,7 +8,7 @@ import(
 func UserRoutes(incomingRoutes *gin.Engine){
 	incomingRoutes.GET("/users",controllers.GetUsers())
 	incomingRoutes.GET("users/:user_id",controllers.GetUser())
-	incomingRoutes.POST("/user/signup",controllers.signup())
+	incomingRoutes.POST("/user/signup",controllers.Signup())
 	incomingRoutes.POST("/user/login",controllers.Login())
 
 

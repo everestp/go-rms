@@ -12,7 +12,7 @@ import (
 )
 
 
-var foodCollection *mongo.Collection = database.OpenCollections(database.Client ,"food")
+var foodCollection *mongo.Collection = database.OpenCollection(database.Client ,"food")
 func main() {
 	// Connect to MongoDB
 
